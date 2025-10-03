@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from utils.validators import not_only_whitespace
 
 class Shop(models.Model):
-    user = models.OneToOneField(
+    user = models.OneToOneField(     # This connection is temporary.It will change
         User,
+        related_name='shops',
     )    
     slug = models.SlugField(
         unique=True,
@@ -15,12 +17,14 @@ class Shop(models.Model):
     )
     name = models.CharField(
         max_length=100,
+        validators=[not_only_whitespace],
         verbose_name='shop name'
     )
     about = models.TextField(
         max_length=1000,
         null=True,
         blank=True,
+        validators=[not_only_whitespace],
         verbose_name='about shop'
     )
     profile = models.ImageField(
