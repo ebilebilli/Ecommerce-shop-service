@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from utils.validators import not_only_whitespace
 
+
 class Shop(models.Model):
     user = models.OneToOneField(     # This connection is temporary.It will change
         User,
