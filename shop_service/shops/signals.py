@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from django.db import transaction
 
-from .models import Shop
+from .v1.models import Shop
 
 
 @receiver(pre_save, sender=Shop)
