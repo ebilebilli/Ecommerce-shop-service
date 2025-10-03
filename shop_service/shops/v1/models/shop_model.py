@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,6 +8,11 @@ class Shop(models.Model):
     user = models.OneToOneField(     # This connection is temporary.It will change
         User,
         related_name='shops',
+    )
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
     )    
     slug = models.SlugField(
         unique=True,
