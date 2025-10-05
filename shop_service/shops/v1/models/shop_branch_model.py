@@ -1,6 +1,7 @@
 from django.db import models
 
 from .shop_model import Shop
+from utils.validators import not_only_whitespace
 
 
 class ShopBranch(models.Model):
@@ -9,8 +10,13 @@ class ShopBranch(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Shop'
     )
+    shop_branch_name = models.CharField(
+        max_length=100,
+        validators=[not_only_whitespace],
+        verbose_name='Shop branch name'
+    )
     about = models.TextField(
-        max_length=1000,
+        max_length=2000,
         null=True,
         blank=True,
         verbose_name='About shop branch'
@@ -46,3 +52,6 @@ class ShopBranch(models.Model):
         default=True,
         verbose_name='Is active'
     )
+
+    def __str__(self):
+        return f'{self.shop.id}: {self.shop_branch_name}'

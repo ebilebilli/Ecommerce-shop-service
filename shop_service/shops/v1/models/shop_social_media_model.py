@@ -16,3 +16,6 @@ class ShopSocialMedia(models.Model):
         max_length=200,
         verbose_name='Media url'
     )
+
+    def __str__(self):
+        return f'{self.shop.id}: {self.media_name}'
