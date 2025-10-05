@@ -9,6 +9,9 @@ class Shop(models.Model):
     user = models.OneToOneField(     # This connection is temporary.It will change
         User,
         related_name='shops',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
     id = models.UUIDField(
         primary_key=True,

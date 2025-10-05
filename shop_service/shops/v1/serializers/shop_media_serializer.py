@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from v1.models import ShopMedia
+from v1.models.shop_media_model import ShopMedia
 
 
 class ShopMediaSerializer(serializers.ModelSerializer):
