@@ -28,3 +28,21 @@ class CommentListByShopAPIView(APIView):
         serializer = ShopCommentSerializer(paginator, many=True)
 
         return pagination.get_paginated_response(serializer.data)
+
+
+class CreateShopCommentAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post']
+
+    def post(self, request, slug):
+        data = request.data
+        shop = get_object_or_404(Shop, slug=slug, is_active=True)
+        serializer = ShopCommentSerializer(data=data, context={
+            'request': request,
+            'shop': shop,
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
