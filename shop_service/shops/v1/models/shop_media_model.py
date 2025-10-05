@@ -1,11 +1,12 @@
 from django.db import models
 
-from v1.models import Shop
+from .shop_model import Shop
 
 
 class ShopMedia(models.Model):
     shop = models.ForeignKey(
-        Shop
+        Shop,
+        on_delete=models.CASCADE
     )
     image = models.ImageField(
         upload_to='shop_media',
