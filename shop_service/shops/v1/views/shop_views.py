@@ -11,6 +11,13 @@ from serializers.shop_serializer import ShopSerializer
 from utils.pagination import CustomPagination
 
 
+__all__ = [
+    'ShopListAPIView',
+    'ShopDetailAPIView',
+    'CreateShopAPIView',
+    'ShopManagementAPIView'
+]
+
 class ShopListAPIView(APIView):
     """List all active shops with pagination."""
     permission_classes = [AllowAny]
