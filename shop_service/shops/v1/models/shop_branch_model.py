@@ -6,7 +6,8 @@ from .shop_model import Shop
 class ShopBranch(models.Model):
     shop = models.ForeignKey(
         Shop,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Shop'
     )
     about = models.TextField(
         max_length=1000,

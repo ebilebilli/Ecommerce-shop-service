@@ -6,7 +6,8 @@ from .shop_model import Shop
 class ShopMedia(models.Model):
     shop = models.ForeignKey(
         Shop,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Shop'
     )
     image = models.ImageField(
         upload_to='shop_media',
