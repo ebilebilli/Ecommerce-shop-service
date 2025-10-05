@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from v1.models.shop_model import Shop
+from ..models.shop_model import Shop
 
 
 class ShopSerializer(serializers.ModelSerializer):

@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from models.shop_model import Shop
-from serializers.shop_serializer import ShopSerializer
+from ..models import Shop
+from ..serializers import ShopSerializer
 from utils.pagination import CustomPagination
 
 
