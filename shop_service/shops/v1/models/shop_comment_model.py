@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import User
 from .shop_model import Shop
@@ -35,6 +36,11 @@ class ShopComment(models.Model):
         blank=True,
         verbose_name='Comment rating(1-5)'
     )
+
+    
+    def clean(self):
+        if not self.text and not self.rating:
+            raise ValidationError('Comment text or rating must be provided.')
 
     def __str__(self):
         return f'{self.user.id} add comment to {self.shop.id}'
