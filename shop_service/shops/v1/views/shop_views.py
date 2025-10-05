@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -35,3 +35,21 @@ class ShopDetailAPIView(APIView):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopSerializer(shop)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ShopManagementAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['patch', 'delete']
+
+    def patch(self, request, shop_id):
+        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+        if shop.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = ShopSerializer(shop, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    
