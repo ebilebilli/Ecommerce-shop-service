@@ -12,10 +12,13 @@ from utils.pagination import CustomPagination
 
 
 __all__ = [
-    'CommentListByShopAPIView'
+    'CommentListByShopAPIView',
+    'CreateShopCommentAPIView',
+    'CommentManagementAPIView'
 ]
 
 class CommentListByShopAPIView(APIView):
+    """List comments of a shop."""
     permission_classes = [AllowAny]
     pagination_class = CustomPagination
     http_method_names = ['get']
@@ -31,6 +34,7 @@ class CommentListByShopAPIView(APIView):
 
 
 class CreateShopCommentAPIView(APIView):
+    """Create a shop comment."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
@@ -48,8 +52,8 @@ class CreateShopCommentAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
 class CommentManagementAPIView(APIView):
+    """Update or delete a comment."""
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     http_method_names = ['delete', 'patch']
