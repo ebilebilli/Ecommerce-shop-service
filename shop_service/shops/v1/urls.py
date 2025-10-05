@@ -22,5 +22,20 @@ urlpatterns = [
         'shops/management/',
         ShopManagementAPIView.as_view(), 
         name='shop-manage'
+    ),
+    path(
+        'shops/<slug:shop_slug>/comments/', 
+        CommentListByShopAPIView.as_view(),
+        name='comment-list'
+    ),
+    path(
+        'shops/<slug:shop_slug>/create/', 
+        CreateShopCommentAPIView.as_view(),
+        name='create-shop-comment'
+    ),
+    path(
+        'comments/<int:comment_id>/management/',
+        CommentManagementAPIView.as_view(), 
+        name='comment-manage'
     ),            
 ]
