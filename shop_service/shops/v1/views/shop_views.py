@@ -1,0 +1,66 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
+from models.shop_model import Shop
+from serializers.shop_serializer import ShopSerializer
+from utils.pagination import CustomPagination
+
+
+class ShopListAPIView(APIView):
+    permission_classes = [AllowAny]
+    http_method_names =['get']
+    pagination_class = CustomPagination
+
+    def get(self, request):
+        pagination = self.pagination_class()
+        shops = Shop.objects.filter(is_active=True)
+        paginated_shops = pagination.paginate_queryset(shops, request)
+        if paginated_shops:
+            serializer = ShopSerializer(paginated_shops, many=True)
+            return pagination.get_paginated_response(serializer.data)
+        
+        return Response({'error': 'Shops not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ShopDetailAPIView(APIView):
+    permission_classes = [AllowAny]
+    http_method_names =['get']
+   
+    def get(self, request, shop_slug):
+        shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
+        serializer = ShopSerializer(shop)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ShopManagementAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['patch', 'delete']
+
+    def patch(self, request, shop_id):
+        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+        if shop.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = ShopSerializer(shop, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, shop_id):
+        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+        if shop.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        shop.is_active = False
+        shop.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+    
