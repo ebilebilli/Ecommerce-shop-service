@@ -12,6 +12,7 @@ from utils.pagination import CustomPagination
 
 
 class ShopListAPIView(APIView):
+    """List all active shops with pagination."""
     permission_classes = [AllowAny]
     http_method_names =['get']
     pagination_class = CustomPagination
@@ -28,6 +29,7 @@ class ShopListAPIView(APIView):
 
 
 class ShopDetailAPIView(APIView):
+    """Retrieve details of a specific shop by slug."""
     permission_classes = [AllowAny]
     http_method_names =['get']
    
@@ -38,6 +40,7 @@ class ShopDetailAPIView(APIView):
 
 
 class CreateShopAPIView(APIView):
+    """Create a new shop. Only authenticated users can create."""
     permission_classes = [IsAuthenticated]
     http_method_names =['post']
 
@@ -53,6 +56,7 @@ class CreateShopAPIView(APIView):
 
 
 class ShopManagementAPIView(APIView):
+    """Update or soft-delete a shop. Only the owner can modify or delete."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
