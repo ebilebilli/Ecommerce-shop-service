@@ -37,16 +37,32 @@ class ShopDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CreateShopAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names =['post']
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+        serializer = ShopSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ShopManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, shop_id):
+        data = request.data
         shop = get_object_or_404(Shop, id=shop_id, is_active=True)
         if shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ShopSerializer(shop, data=request.data, partial=True)
+        serializer = ShopSerializer(shop, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
