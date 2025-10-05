@@ -53,3 +53,14 @@ class ShopManagementAPIView(APIView):
         
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
+
+    def delete(self, request, shop_id):
+        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+        if shop.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        shop.is_active = False
+        shop.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+    
