@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from v1.models.shop_comment_model import ShopComment
+from ..models.shop_comment_model import ShopComment
 
 class ShopCommentSerializer(serializers.ModelSerializer):
     class Meta:

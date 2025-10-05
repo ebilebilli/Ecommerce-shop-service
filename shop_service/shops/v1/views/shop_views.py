@@ -6,12 +6,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from models.shop_model import Shop
-from serializers.shop_serializer import ShopSerializer
+from ..models import Shop
+from ..serializers import ShopSerializer
 from utils.pagination import CustomPagination
 
 
+__all__ = [
+    'ShopListAPIView',
+    'ShopDetailAPIView',
+    'CreateShopAPIView',
+    'ShopManagementAPIView'
+]
+
 class ShopListAPIView(APIView):
+    """List all active shops with pagination."""
     permission_classes = [AllowAny]
     http_method_names =['get']
     pagination_class = CustomPagination
@@ -28,6 +36,7 @@ class ShopListAPIView(APIView):
 
 
 class ShopDetailAPIView(APIView):
+    """Retrieve details of a specific shop by slug."""
     permission_classes = [AllowAny]
     http_method_names =['get']
    
@@ -37,16 +46,34 @@ class ShopDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CreateShopAPIView(APIView):
+    """Create a new shop. Only authenticated users can create."""
+    permission_classes = [IsAuthenticated]
+    http_method_names =['post']
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+        serializer = ShopSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ShopManagementAPIView(APIView):
+    """Update or soft-delete a shop. Only the owner can modify or delete."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, shop_id):
+        data = request.data
         shop = get_object_or_404(Shop, id=shop_id, is_active=True)
         if shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ShopSerializer(shop, data=request.data, partial=True)
+        serializer = ShopSerializer(shop, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
