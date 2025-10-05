@@ -46,3 +46,33 @@ class CreateShopCommentAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class CommentManagementAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['delete', 'patch']
+
+    def patch(self, request, comment_id):
+        data = request.data
+        comment = get_object_or_404(ShopComment, id=comment_id)
+        if comment.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer = ShopCommentSerializer(comment, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def delete(self, request, comment_id):
+        comment = get_object_or_404(ShopComment, id=comment_id)
+        if comment.user.id != request.user.id:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        comment.is_active = False
+        comment.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

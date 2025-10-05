@@ -36,6 +36,17 @@ class ShopComment(models.Model):
         blank=True,
         verbose_name='Comment rating(1-5)'
     )
+    is_active = models.BooleanField(
+        default=True
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Comment created at'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Comment updated at'
+    )
 
     
     def clean(self):
