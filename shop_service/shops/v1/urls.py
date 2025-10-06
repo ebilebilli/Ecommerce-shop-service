@@ -42,23 +42,23 @@ urlpatterns = [
     ),
     # ShopBranch endpoints
     path(
-        'shops/<slug:shop_slug>/branchs/',
+        'shops/<slug:shop_slug>/branches/',
         ShopBranchListByShopAPIView.as_view(),
         name='branch-list'
     ),         
     path(
-        'branchs/<slug:shop_branch_slug>/', 
+        'branches/<slug:shop_branch_slug>/', 
         ShopBranchDetailAPIView.as_view(), 
         name='branch-detail'
     ),  
     path(
-        'branchs/create/',
+        'branches/create/',
         CreateShopBranchAPIView.as_view(), 
         name='branch-create'
     ),
     path(
-        'branchs/<slug:shop_branch_slug>/management/',
-        ShopManagementAPIView.as_view(), 
+        'branches/<slug:shop_branch_slug>/management/',
+        ShopBranchManagementAPIView.as_view(), 
         name='shop-manage'
     ),             
 ]
