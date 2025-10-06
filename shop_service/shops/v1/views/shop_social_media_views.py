@@ -69,9 +69,9 @@ class ShopSocialMediaManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    def patch(self, request, shop_id):
+    def patch(self, request, social_media_id):
         data = request.data
-        social_media = get_object_or_404(ShopSocialMedia, id=shop_id)
+        social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
         if social_media.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
@@ -83,8 +83,8 @@ class ShopSocialMediaManagementAPIView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
 
-    def delete(self, request, shop_id):
-        social_media = get_object_or_404(ShopSocialMedia, id=shop_id)
+    def delete(self, request, social_media_id):
+        social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
         if social_media.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         

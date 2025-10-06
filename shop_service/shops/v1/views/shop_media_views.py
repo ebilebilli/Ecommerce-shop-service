@@ -12,7 +12,8 @@ from ..serializers.shop_media_serializer import ShopMediaSerializer
 
 __all__ = [
     'ShopMediaByShopAPIView',
-    'CreateShopMediaAPIView'
+    'CreateShopMediaAPIView',
+    'DeleteShopMediaAPIView'
 ]
 
 class ShopMediaByShopAPIView(APIView):
@@ -33,7 +34,7 @@ class ShopMediaByShopAPIView(APIView):
         )
 
 
-class CreateMediaAPIView(APIView):
+class CreateShopMediaAPIView(APIView):
     """Allows an authenticated user to create a new shop media."""
     permission_classes = [IsAuthenticated]
     http_method_names =['post']
@@ -49,3 +50,17 @@ class CreateMediaAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteShopMediaAPIView(APIView):
+    """Allows the owner to delete their shop media."""
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['delete']
+
+    def delete(self, request, shop_id):
+        shop_media = get_object_or_404(ShopMedia, id=shop_id)
+        if shop_media.shop.user != request.user:
+            return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
+        
+        shop_media.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
