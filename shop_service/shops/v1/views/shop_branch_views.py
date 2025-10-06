@@ -36,3 +36,18 @@ class ShopBranchDetailAPIView(APIView):
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
         serializer = ShopBranchSerializer(shop_branch)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class CreateShopBranchAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names =['post']
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+        serializer = ShopBranchSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
