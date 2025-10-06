@@ -72,7 +72,7 @@ class ShopBranchManagementAPIView(APIView):
     def patch(self, request, shop_branch_slug):
         data = request.data
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
-        if shop_branch.shop.user.id != request.user.id:
+        if shop_branch.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = ShopBranchSerializer(shop_branch, data=data, partial=True)
@@ -85,7 +85,7 @@ class ShopBranchManagementAPIView(APIView):
 
     def delete(self, request, shop_branch_slug):
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
-        if shop_branch.shop.user.id != request.user.id:
+        if shop_branch.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         shop_branch.is_active = False

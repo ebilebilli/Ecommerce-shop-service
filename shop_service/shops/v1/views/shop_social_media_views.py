@@ -72,7 +72,7 @@ class ShopSocialMediaManagementAPIView(APIView):
     def patch(self, request, social_media_id):
         data = request.data
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
-        if social_media.shop.user.id != request.user.id:
+        if social_media.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = ShopSocialMediaSerializer(social_media, data=data, partial=True)
@@ -85,7 +85,7 @@ class ShopSocialMediaManagementAPIView(APIView):
 
     def delete(self, request, social_media_id):
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
-        if social_media.shop.user.id != request.user.id:
+        if social_media.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         social_media.delete()
