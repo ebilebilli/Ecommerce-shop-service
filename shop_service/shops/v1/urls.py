@@ -3,6 +3,7 @@ from .views import *
 
 
 urlpatterns = [
+    # Shop endpoints
     path(
         'shops/', 
         ShopListAPIView.as_view(),
@@ -19,10 +20,11 @@ urlpatterns = [
         name='shop-create'
     ),
     path(
-        'shops/management/',
+        'shops/<slug:shop_slug>/management/',
         ShopManagementAPIView.as_view(), 
         name='shop-manage'
     ),
+    # ShopComment endpoints
     path(
         'shops/<slug:shop_slug>/comments/', 
         CommentListByShopAPIView.as_view(),
@@ -37,5 +39,26 @@ urlpatterns = [
         'comments/<int:comment_id>/management/',
         CommentManagementAPIView.as_view(), 
         name='comment-manage'
-    ),            
+    ),
+    # ShopBranch endpoints
+    path(
+        'shops/<slug:shop_slug>/branchs/',
+        ShopBranchListByShopAPIView.as_view(),
+        name='branch-list'
+    ),         
+    path(
+        'branchs/<slug:shop_branch_slug>/', 
+        ShopBranchDetailAPIView.as_view(), 
+        name='branch-detail'
+    ),  
+    path(
+        'branchs/create/',
+        CreateShopBranchAPIView.as_view(), 
+        name='branch-create'
+    ),
+    path(
+        'branchs/<slug:shop_branch_slug>/management/',
+        ShopManagementAPIView.as_view(), 
+        name='shop-manage'
+    ),             
 ]
