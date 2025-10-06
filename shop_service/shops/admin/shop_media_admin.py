@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from models.shop_media_model import ShopMedia
+from shops.v1.models.shop_media_model import ShopMedia
 
 
 @admin.register(ShopMedia)

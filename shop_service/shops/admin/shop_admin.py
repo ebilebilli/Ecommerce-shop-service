@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models.shop_model import Shop
+from shops.v1.models.shop_model import Shop
 
 
 @admin.register(Shop)

@@ -31,7 +31,7 @@ urlpatterns = [
         name='comment-list'
     ),
     path(
-        'shops/<slug:shop_slug>/create/', 
+        'shops/<slug:shop_slug>/comment/create/', 
         CreateShopCommentAPIView.as_view(),
         name='create-shop-comment'
     ),

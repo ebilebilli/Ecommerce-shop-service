@@ -1,3 +1,5 @@
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -38,9 +40,18 @@ class CreateShopCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
-    def post(self, request, slug):
+    @swagger_auto_schema(
+        operation_summary="Create a comment for a shop",
+        operation_description="Authenticated users can create a comment for a given shop. The shop is determined by the slug in the URL.",
+        request_body=ShopCommentSerializer,
+        responses={
+            201: ShopCommentSerializer,
+            400: "Validation errors"
+        }
+    )
+    def post(self, request, shop_slug):
         data = request.data
-        shop = get_object_or_404(Shop, slug=slug, is_active=True)
+        shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopCommentSerializer(data=data, context={
             'request': request,
             'shop': shop,

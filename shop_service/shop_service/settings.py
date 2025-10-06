@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third party 
+    # Third party apps
     'rest_framework',
+    'drf_yasg',
     # Apps
     'shops'
 ]
@@ -65,15 +66,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'shop_service.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# Database(PostgreSQL) configuration
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB'),
+#         'USER': os.getenv('POSTGRES_USER'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+#         'HOST': os.getenv('POSTGRES_HOST'),
+#         'PORT': os.getenv('POSTGRES_PORT'),
+#         'CONN_MAX_AGE': 600,  
+#         'OPTIONS': {
+#             'sslmode': 'disable',
+#         },
+#     }
+# }
 
 
 # Password validation

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models.shop_branch_model import ShopBranch
+from shops.v1.models.shop_branch_model import ShopBranch
 
 
 @admin.register(ShopBranch)

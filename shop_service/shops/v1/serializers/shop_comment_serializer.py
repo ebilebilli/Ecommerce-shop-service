@@ -3,6 +3,9 @@ from rest_framework import serializers
 from ..models.shop_comment_model import ShopComment
 
 class ShopCommentSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    shop = serializers.PrimaryKeyRelatedField(read_only=True)
+    
     class Meta:
         model = ShopComment
         fields = '__all__'

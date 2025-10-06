@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
+from drf_yasg import openapi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
 
 from ..models import Shop
 from ..serializers import ShopSerializer
@@ -24,6 +26,16 @@ class ShopListAPIView(APIView):
     http_method_names =['get']
     pagination_class = CustomPagination
 
+    @swagger_auto_schema(
+        operation_description="Get a paginated list of all active shops.",
+        responses={
+            200: openapi.Response(
+                description="Paginated list of active shops",
+                schema=ShopSerializer(many=True)
+            ),
+            404: "Shops not found"
+        }
+    )
     def get(self, request):
         pagination = self.pagination_class()
         shops = Shop.objects.filter(is_active=True)
@@ -39,7 +51,11 @@ class ShopDetailAPIView(APIView):
     """Retrieve details of a specific shop by slug."""
     permission_classes = [AllowAny]
     http_method_names =['get']
-   
+
+    @swagger_auto_schema(
+        operation_summary="Get shop details by slug",
+        responses={200: ShopSerializer()}
+    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopSerializer(shop)
@@ -49,8 +65,17 @@ class ShopDetailAPIView(APIView):
 class CreateShopAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
     permission_classes = [IsAuthenticated]
-    http_method_names =['post']
+    http_method_names = ['post']
 
+    @swagger_auto_schema(
+        operation_summary="Create a new shop",
+        operation_description="Authenticated users can create a new shop. The current user is assigned automatically.",
+        request_body=ShopSerializer,
+        responses={
+            201: ShopSerializer,
+            400: "Validation errors"
+        }
+    )
     def post(self, request):
         user = request.user
         data = request.data
