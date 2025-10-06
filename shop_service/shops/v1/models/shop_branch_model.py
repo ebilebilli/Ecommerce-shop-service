@@ -10,6 +10,13 @@ class ShopBranch(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Shop'
     )
+    slug = models.SlugField(
+        unique=True,
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name='Shop branch slug'
+    )
     shop_branch_name = models.CharField(
         max_length=100,
         validators=[not_only_whitespace],
