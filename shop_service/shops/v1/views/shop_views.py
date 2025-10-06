@@ -70,7 +70,7 @@ class ShopManagementAPIView(APIView):
     def patch(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        if shop.user.id != request.user.id:
+        if shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = ShopSerializer(shop, data=data, partial=True)
@@ -83,7 +83,7 @@ class ShopManagementAPIView(APIView):
 
     def delete(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        if shop.user.id != request.user.id:
+        if shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         shop.is_active = False

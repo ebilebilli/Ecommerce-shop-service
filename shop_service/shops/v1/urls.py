@@ -81,5 +81,21 @@ urlpatterns = [
         'social-media/<int:social_media_id>/management/',
         ShopSocialMediaManagementAPIView.as_view(),
         name='social-media-manage'
+    ),
+    # ShopMedia endpoints
+     path(
+        'shops/<slug:shop_slug>/media/',
+        ShopMediaByShopAPIView.as_view(),
+        name='shop-media-list'
+    ),
+    path(
+        'media/create/',
+        CreateShopMediaAPIView.as_view(),
+        name='shop-media-create'
+    ),
+    path(
+        'media/<int:media_id>/delete/',
+        DeleteShopMediaAPIView.as_view(),
+        name='shop-media-delete'
     ),             
 ]

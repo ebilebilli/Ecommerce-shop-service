@@ -61,7 +61,7 @@ class CommentManagementAPIView(APIView):
     def patch(self, request, comment_id):
         data = request.data
         comment = get_object_or_404(ShopComment, id=comment_id)
-        if comment.user.id != request.user.id:
+        if comment.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = ShopCommentSerializer(comment, data=data, partial=True)
@@ -74,7 +74,7 @@ class CommentManagementAPIView(APIView):
 
     def delete(self, request, comment_id):
         comment = get_object_or_404(ShopComment, id=comment_id)
-        if comment.user.id != request.user.id:
+        if comment.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
         comment.is_active = False
