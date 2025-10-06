@@ -18,6 +18,7 @@ __all__ = [
 ]
 
 class ShopBranchListByShopAPIView(APIView):
+    """Returns a list of active branches for a given shop."""
     permission_classes = [AllowAny]
     http_method_names = ['get']
 
@@ -35,6 +36,7 @@ class ShopBranchListByShopAPIView(APIView):
 
 
 class ShopBranchDetailAPIView(APIView):
+    """Returns detailed information about a specific branch by its slug."""
     permission_classes = [AllowAny]
     http_method_names =['get']
    
@@ -45,6 +47,7 @@ class ShopBranchDetailAPIView(APIView):
     
 
 class CreateShopBranchAPIView(APIView):
+    """Allows an authenticated user to create a new shop branch."""
     permission_classes = [IsAuthenticated]
     http_method_names =['post']
 
@@ -60,6 +63,7 @@ class CreateShopBranchAPIView(APIView):
 
 
 class ShopBranchManagementAPIView(APIView):
+    """Allows the owner to update or soft-delete their shop branch."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
