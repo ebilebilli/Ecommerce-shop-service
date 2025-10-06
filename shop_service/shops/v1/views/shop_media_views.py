@@ -57,8 +57,8 @@ class DeleteShopMediaAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['delete']
 
-    def delete(self, request, shop_id):
-        shop_media = get_object_or_404(ShopMedia, id=shop_id)
+    def delete(self, request, media_id):
+        shop_media = get_object_or_404(ShopMedia, id=media_id)
         if shop_media.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
