@@ -11,6 +11,12 @@ class ShopMediaSerializer(serializers.ModelSerializer):
         model = ShopMedia
         fields = '__all__'
     
+    def validate_shop(self, value):
+        request = self.context.get('request')
+        if request and value.user != request.user:
+            raise serializers.ValidationError('You do not own this shop.')
+        return value
+    
     def validate_image(self, value):
         max_size = 5 * 1024 * 1024
         if value.size > max_size:

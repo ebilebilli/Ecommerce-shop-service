@@ -53,7 +53,10 @@ class CreateShopSocialMediaAPIView(APIView):
 
     def post(self, request):
         data = request.data
-        serializer = ShopSocialMediaSerializer(data=data)
+        serializer = ShopSocialMediaSerializer(
+            data=data, 
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -11,7 +11,8 @@ from ..serializers.shop_media_serializer import ShopMediaSerializer
 
 
 __all__ = [
-    'ShopMediaByShopAPIView'
+    'ShopMediaByShopAPIView',
+    'CreateShopMediaAPIView'
 ]
 
 class ShopMediaByShopAPIView(APIView):
@@ -30,3 +31,21 @@ class ShopMediaByShopAPIView(APIView):
             {'detail': 'No media found for this shop.'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class CreateMediaAPIView(APIView):
+    """Allows an authenticated user to create a new shop media."""
+    permission_classes = [IsAuthenticated]
+    http_method_names =['post']
+
+    def post(self, request):
+        data = request.data
+        serializer = ShopMediaSerializer(
+            data=data, 
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
