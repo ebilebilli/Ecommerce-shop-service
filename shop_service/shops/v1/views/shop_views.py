@@ -67,9 +67,9 @@ class ShopManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    def patch(self, request, shop_id):
+    def patch(self, request, shop_slug):
         data = request.data
-        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+        shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         if shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
@@ -81,8 +81,8 @@ class ShopManagementAPIView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
 
-    def delete(self, request, shop_id):
-        shop = get_object_or_404(Shop, id=shop_id, is_active=True)
+    def delete(self, request, shop_slug):
+        shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         if shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         

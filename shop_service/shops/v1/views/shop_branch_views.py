@@ -53,7 +53,10 @@ class CreateShopBranchAPIView(APIView):
 
     def post(self, request):
         data = request.data
-        serializer = ShopBranchSerializer(data=data)
+        serializer = ShopBranchSerializer(
+            data=data, 
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -66,9 +69,9 @@ class ShopBranchManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    def patch(self, request, shop_id):
+    def patch(self, request, shop_branch_slug):
         data = request.data
-        shop_branch = get_object_or_404(ShopBranch, id=shop_id, is_active=True)
+        shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
         if shop_branch.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
@@ -80,8 +83,8 @@ class ShopBranchManagementAPIView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
 
-    def delete(self, request, shop_id):
-        shop_branch = get_object_or_404(ShopBranch, id=shop_id, is_active=True)
+    def delete(self, request, shop_branch_slug):
+        shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
         if shop_branch.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
