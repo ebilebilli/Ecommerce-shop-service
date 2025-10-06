@@ -59,6 +59,27 @@ urlpatterns = [
     path(
         'branches/<slug:shop_branch_slug>/management/',
         ShopBranchManagementAPIView.as_view(), 
-        name='shop-manage'
+        name='branch-manage'
+    ),
+    # ShopSocialMedia endpoints
+      path(
+        'shops/<slug:shop_slug>/social-media/',
+        ShopSocialMediaListByShopAPIView.as_view(),
+        name='social-media-list'
+    ),
+    path(
+        'social-media/<int:social_media_id>/',
+        ShopSocialMediaDetailAPIView.as_view(),
+        name='social-media-detail'
+    ),
+    path(
+        'social-media/create/',
+        CreateShopSocialMediaAPIView.as_view(),
+        name='social-media-create'
+    ),
+    path(
+        'social-media/<int:social_media_id>/management/',
+        ShopSocialMediaManagementAPIView.as_view(),
+        name='social-media-manage'
     ),             
 ]

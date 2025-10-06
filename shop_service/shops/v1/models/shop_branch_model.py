@@ -28,7 +28,7 @@ class ShopBranch(models.Model):
         blank=True,
         verbose_name='About shop branch'
     )
-    phone_number = models.PositiveIntegerField(
+    phone_number = models.CharField(
         null=True,
         blank=True,
         verbose_name='Shop branch phone number'
