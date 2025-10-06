@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404
+from drf_yasg import openapi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
 
 from ..models import Shop
 from ..serializers import ShopSerializer
@@ -24,6 +26,16 @@ class ShopListAPIView(APIView):
     http_method_names =['get']
     pagination_class = CustomPagination
 
+    @swagger_auto_schema(
+        operation_description="Get a paginated list of all active shops.",
+        responses={
+            200: openapi.Response(
+                description="Paginated list of active shops",
+                schema=ShopSerializer(many=True)
+            ),
+            404: "Shops not found"
+        }
+    )
     def get(self, request):
         pagination = self.pagination_class()
         shops = Shop.objects.filter(is_active=True)

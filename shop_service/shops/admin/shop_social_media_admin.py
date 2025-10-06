@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models.shop_social_media_model import ShopSocialMedia
+from shops.v1.models.shop_social_media_model import ShopSocialMedia
 
 
 @admin.register(ShopSocialMedia)
