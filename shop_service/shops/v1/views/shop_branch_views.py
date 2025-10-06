@@ -24,9 +24,9 @@ class ShopBranchListByShopAPIView(APIView):
 
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        shop_branchs = ShopBranch.objects.filter(shop=shop, is_active=True)
-        if shop_branchs.exists():
-            serializer = ShopBranchSerializer(shop_branchs, many=True)
+        shop_branches = ShopBranch.objects.filter(shop=shop, is_active=True)
+        if shop_branches.exists():
+            serializer = ShopBranchSerializer(shop_branches, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(
