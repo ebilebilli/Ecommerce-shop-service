@@ -38,7 +38,7 @@ class ShopSocialMediaListByShopAPIView(APIView):
 class ShopSocialMediaDetailAPIView(APIView):
     """Returns detailed information about a specific social media by its id."""
     permission_classes = [AllowAny]
-    http_method_names =['get']
+    http_method_names = ['get']
    
     def get(self, request, social_media_id):
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
@@ -49,7 +49,7 @@ class ShopSocialMediaDetailAPIView(APIView):
 class CreateShopSocialMediaAPIView(APIView):
     """Allows an authenticated user to create a new shop social media."""
     permission_classes = [IsAuthenticated]
-    http_method_names =['post']
+    http_method_names = ['post']
 
     def post(self, request):
         data = request.data

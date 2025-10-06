@@ -51,7 +51,11 @@ class ShopDetailAPIView(APIView):
     """Retrieve details of a specific shop by slug."""
     permission_classes = [AllowAny]
     http_method_names =['get']
-   
+
+    @swagger_auto_schema(
+        operation_summary="Get shop details by slug",
+        responses={200: ShopSerializer()}
+    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopSerializer(shop)
@@ -61,8 +65,17 @@ class ShopDetailAPIView(APIView):
 class CreateShopAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
     permission_classes = [IsAuthenticated]
-    http_method_names =['post']
+    http_method_names = ['post']
 
+    @swagger_auto_schema(
+        operation_summary="Create a new shop",
+        operation_description="Authenticated users can create a new shop. The current user is assigned automatically.",
+        request_body=ShopSerializer,
+        responses={
+            201: ShopSerializer,
+            400: "Validation errors"
+        }
+    )
     def post(self, request):
         user = request.user
         data = request.data
