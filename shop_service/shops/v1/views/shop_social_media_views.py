@@ -6,54 +6,54 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from ..models.shop_model import Shop
-from ..models.shop_branch_model import ShopBranch
-from ..serializers.shop_branch_serializer import ShopBranchSerializer
+from ..models.shop_social_media_model import ShopSocialMedia
+from ..serializers.shop_social_media_serializer import ShopSocialMediaSerializer
 
 
 __all__ = [
-    'ShopBranchListByShopAPIView',
-    'ShopBranchDetailAPIView',
-    'CreateShopBranchAPIView',
-    'ShopBranchManagementAPIView'
+    'ShopSocialMediaListByShopAPIView',
+    'ShopSocialMediaDetailAPIView',
+    'CreateShopSocialMediaAPIView',
+    'ShopSocialMediaManagementAPIView'
 ]
 
-class ShopBranchListByShopAPIView(APIView):
-    """Returns a list of active branches for a given shop."""
+class ShopSocialMediaListByShopAPIView(APIView):
+    """Returns a list of branches for a given shop."""
     permission_classes = [AllowAny]
     http_method_names = ['get']
 
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        shop_branches = ShopBranch.objects.filter(shop=shop, is_active=True)
-        if shop_branches.exists():
-            serializer = ShopBranchSerializer(shop_branches, many=True)
+        social_medias = ShopSocialMedia.objects.filter(shop=shop)
+        if social_medias.exists():
+            serializer = ShopSocialMediaSerializer(social_medias, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(
-            {'detail': 'No active branches found for this shop.'}, 
+            {'detail': 'No social media found for this shop.'}, 
             status=status.HTTP_400_BAD_REQUEST
         )
 
 
-class ShopBranchDetailAPIView(APIView):
-    """Returns detailed information about a specific branch by its slug."""
+class ShopSocialMediaDetailAPIView(APIView):
+    """Returns detailed information about a specific social media by its id."""
     permission_classes = [AllowAny]
     http_method_names =['get']
    
-    def get(self, request, shop_branch_slug):
-        shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
-        serializer = ShopBranchSerializer(shop_branch)
+    def get(self, request, social_media_id):
+        social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
+        serializer = ShopSocialMediaSerializer(social_media)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-class CreateShopBranchAPIView(APIView):
-    """Allows an authenticated user to create a new shop branch."""
+class CreateShopSocialMediaAPIView(APIView):
+    """Allows an authenticated user to create a new shop social media."""
     permission_classes = [IsAuthenticated]
     http_method_names =['post']
 
     def post(self, request):
         data = request.data
-        serializer = ShopBranchSerializer(data=data)
+        serializer = ShopSocialMediaSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -61,18 +61,18 @@ class CreateShopBranchAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ShopBranchManagementAPIView(APIView):
-    """Allows the owner to update or soft-delete their shop branch."""
+class ShopSocialMediaManagementAPIView(APIView):
+    """Allows the owner to update or delete their shop social media."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, shop_id):
         data = request.data
-        shop_branch = get_object_or_404(ShopBranch, id=shop_id, is_active=True)
-        if shop_branch.shop.user.id != request.user.id:
+        social_media = get_object_or_404(ShopSocialMedia, id=shop_id)
+        if social_media.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ShopBranchSerializer(shop_branch, data=data, partial=True)
+        serializer = ShopSocialMediaSerializer(social_media, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -81,11 +81,10 @@ class ShopBranchManagementAPIView(APIView):
     
 
     def delete(self, request, shop_id):
-        shop_branch = get_object_or_404(ShopBranch, id=shop_id, is_active=True)
-        if shop_branch.shop.user.id != request.user.id:
+        social_media = get_object_or_404(ShopSocialMedia, id=shop_id)
+        if social_media.shop.user.id != request.user.id:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        shop_branch.is_active = False
-        shop_branch.save()
+        social_media.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
