@@ -27,3 +27,7 @@ class ShopMediaSerializer(serializers.ModelSerializer):
             raise ValidationError("Unsupported image format. Use JPEG or PNG.")
         
         return value
+    
+    def create(self, validated_data):
+        validated_data['shop'] = self.context.get('shop')
+        return super().create(validated_data)

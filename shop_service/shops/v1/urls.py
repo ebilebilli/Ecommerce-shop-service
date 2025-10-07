@@ -89,7 +89,7 @@ urlpatterns = [
         name='shop-media-list'
     ),
     path(
-        'media/create/',
+        'shops/<slug:shop_slug>/media/create/',
         CreateShopMediaAPIView.as_view(),
         name='shop-media-create'
     ),
