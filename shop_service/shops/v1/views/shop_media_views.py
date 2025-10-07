@@ -63,12 +63,14 @@ class CreateShopMediaAPIView(APIView):
             400: "Invalid data or validation error"
         }
     )
-    def post(self, request):
+    def post(self, request, shop_slug):
         data = request.data
+        shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopMediaSerializer(
-            data=data, 
-            context={'request': request}
-        )
+            data=data, context={
+            'request': request,
+            'shop': shop
+        })
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
