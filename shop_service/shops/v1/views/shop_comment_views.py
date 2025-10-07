@@ -25,6 +25,16 @@ class CommentListByShopAPIView(APIView):
     pagination_class = CustomPagination
     http_method_names = ['get']
 
+    @swagger_auto_schema(
+        operation_description="Get a paginated list of comments for a specific active shop.",
+        responses={
+            200: openapi.Response(
+                description="Paginated list of shop comments",
+                schema=ShopCommentSerializer(many=True)
+            ),
+            404: "Shop not found"
+        }
+    )
     def get(self, request, slug):
         pagination = self.pagination_class()
         shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=slug)
@@ -69,6 +79,19 @@ class CommentManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['delete', 'patch']
 
+    @swagger_auto_schema(
+        operation_description="Partially update a comment owned by the authenticated user.",
+        request_body=ShopCommentSerializer,
+        responses={
+            200: openapi.Response(
+                description="Successfully updated comment",
+                schema=ShopCommentSerializer()
+            ),
+            400: "Validation error",
+            403: "Permission denied",
+            404: "Comment not found"
+        }
+    )    
     def patch(self, request, comment_id):
         data = request.data
         comment = get_object_or_404(ShopComment, id=comment_id)
@@ -82,7 +105,15 @@ class CommentManagementAPIView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
+    
+    @swagger_auto_schema(
+        operation_description="Soft delete a comment owned by the authenticated user (sets is_active=False).",
+        responses={
+            204: "Comment successfully deleted",
+            403: "Permission denied",
+            404: "Comment not found"
+        }
+    )
     def delete(self, request, comment_id):
         comment = get_object_or_404(ShopComment, id=comment_id)
         if comment.user != request.user:
