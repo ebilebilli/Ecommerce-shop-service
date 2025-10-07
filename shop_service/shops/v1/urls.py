@@ -73,7 +73,7 @@ urlpatterns = [
         name='social-media-detail'
     ),
     path(
-        'social-media/create/',
+        'shops/<slug:shop_slug>/social-media/create/',
         CreateShopSocialMediaAPIView.as_view(),
         name='social-media-create'
     ),

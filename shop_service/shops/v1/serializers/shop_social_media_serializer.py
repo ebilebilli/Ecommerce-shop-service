@@ -8,8 +8,6 @@ class ShopSocialMediaSerializer(serializers.ModelSerializer):
         model = ShopSocialMedia
         fields = '__all__'
     
-    def validate_shop(self, value):
-        request = self.context.get('request')
-        if request and value.user != request.user:
-            raise serializers.ValidationError('You do not own this shop.')
-        return value
+    def create(self, validated_data):
+        validated_data['shop'] = self.context.get('shop')
+        return super().create(validated_data)
