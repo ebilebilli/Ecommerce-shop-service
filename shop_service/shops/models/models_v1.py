@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import User
+from utils.abstract_models import SluggedModel
 from utils.validators import not_only_whitespace
 
 
@@ -15,7 +16,7 @@ __all__ = [
     'ShopComment'
 ]
 
-class Shop(models.Model):
+class Shop(SluggedModel):
     user = models.OneToOneField(     # This connection is temporary.It will change
         User,
         related_name='shops',
@@ -28,13 +29,6 @@ class Shop(models.Model):
         default=uuid.uuid4,
         editable=False
     )    
-    slug = models.SlugField(
-        unique=True,
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name='Shop slug'
-    )
     name = models.CharField(
         max_length=100,
         validators=[not_only_whitespace],
@@ -70,22 +64,18 @@ class Shop(models.Model):
         verbose_name='Shop updated at'
     )
 
+    def get_slug_source(self) -> str:
+        return self.name
+
     def __str__(self):
         return self.name
  
 
-class ShopBranch(models.Model):
+class ShopBranch(SluggedModel):
     shop = models.ForeignKey(
         Shop,
         on_delete=models.CASCADE,
         verbose_name='Shop'
-    )
-    slug = models.SlugField(
-        unique=True,
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name='Shop branch slug'
     )
     shop_branch_name = models.CharField(
         max_length=100,
