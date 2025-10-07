@@ -4,12 +4,15 @@ from ..models.shop_branch_model import ShopBranch
 
 
 class ShopBranchSerializer(serializers.ModelSerializer):
+    shop = serializers.PrimaryKeyRelatedField(read_only=True)
+    slug = serializers.PrimaryKeyRelatedField(read_only=True)
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    
     class Meta:
         model = ShopBranch
         fields = '__all__'
     
-    def validate_shop(self, value):
-        request = self.context.get('request')
-        if request and value.user != request.user:
-            raise serializers.ValidationError('You do not own this shop.')
-        return value
+    def create(self, validated_data):
+        validated_data['shop'] = self.context.get('shop')
+        return super().create(validated_data)
