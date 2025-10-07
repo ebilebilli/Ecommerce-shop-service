@@ -52,7 +52,7 @@ urlpatterns = [
         name='branch-detail'
     ),  
     path(
-        'branches/create/',
+        'shops/<slug:shop_slug>/branches/create/',
         CreateShopBranchAPIView.as_view(), 
         name='branch-create'
     ),
