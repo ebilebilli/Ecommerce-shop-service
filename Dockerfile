@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # System dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpq-dev ca-certificates && \
+    build-essential libpq-dev ca-certificates postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
