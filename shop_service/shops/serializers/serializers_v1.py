@@ -60,7 +60,7 @@ class ShopBranchListSerializer(serializers.ModelSerializer):
         model = ShopBranch
         fields = [
             'id',
-            'shop_branch_name',
+            'name',
             'slug',
         ]
 
