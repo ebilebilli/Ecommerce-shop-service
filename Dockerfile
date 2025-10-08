@@ -14,10 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy dependency manifest
-COPY pyproject.toml ./
+COPY pyproject.toml ./ 
 
 # Install Python dependencies declared in pyproject.toml
-# Generate a temporary requirements.txt from pyproject dependencies and install
 RUN python - <<'PY'
 import tomllib, sys
 with open('pyproject.toml','rb') as f:
@@ -26,6 +25,7 @@ reqs = data.get('project', {}).get('dependencies', [])
 open('requirements.txt','w', encoding='utf-8').write("\n".join(reqs))
 print(f"Wrote {len(reqs)} dependencies to requirements.txt", file=sys.stderr)
 PY
+
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
@@ -35,11 +35,12 @@ COPY . .
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
+# Ensure staticfiles dir exists and is writable
+RUN mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles
+
 # Expose port
 EXPOSE 8000
 
 # Entrypoint script
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-
