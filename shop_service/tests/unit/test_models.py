@@ -16,7 +16,7 @@ def test_shop_creation():
     assert shop.user == user
     assert shop.is_active is True
     assert shop.is_verified is False
-    assert isinstance(shop.id, type(user.id))
+    assert isinstance(shop.id, uuid.UUID)
     assert str(shop) == "Test Shop"
     assert shop.get_slug_source() == shop.name
 

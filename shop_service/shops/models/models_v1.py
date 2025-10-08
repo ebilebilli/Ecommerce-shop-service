@@ -120,6 +120,9 @@ class ShopBranch(SluggedModel):
         verbose_name='Is active'
     )
 
+    def get_slug_source(self) -> str:
+        return self.name
+
     def __str__(self):
         return f'{self.shop.id}: {self.shop_branch_name}'
 
