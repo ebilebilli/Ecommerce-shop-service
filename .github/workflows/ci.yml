@@ -68,5 +68,5 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: '5432'
         run: |
-          cd Ecommerce-shop-service
+          cd shop-service
           uv run pytest -q
