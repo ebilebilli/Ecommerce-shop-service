@@ -77,7 +77,7 @@ class ShopBranch(SluggedModel):
         on_delete=models.CASCADE,
         verbose_name='Shop'
     )
-    shop_branch_name = models.CharField(
+    name = models.CharField(
         max_length=100,
         validators=[not_only_whitespace],
         verbose_name='Shop branch name'
@@ -124,7 +124,7 @@ class ShopBranch(SluggedModel):
         return self.name
 
     def __str__(self):
-        return f'{self.shop.id}: {self.shop_branch_name}'
+        return f'{self.shop.id}: {self.name}'
 
 
 class ShopComment(models.Model):
@@ -194,7 +194,7 @@ class ShopMedia(models.Model):
         )
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
 
 class ShopSocialMedia(models.Model):
