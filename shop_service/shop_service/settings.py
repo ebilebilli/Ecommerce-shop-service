@@ -127,11 +127,12 @@ USE_I18N = True
 USE_TZ = True
 
 # Media / Static configuration
-MEDIA_ROOT = os.getenv('MEDIA_ROOT')
-MEDIA_URL = os.getenv('MEDIA_URL')
 
-STATIC_URL = os.getenv('STATIC_URL') 
-STATIC_ROOT = os.getenv('STATIC_ROOT')
+MEDIA_ROOT = os.getenv('MEDIA_ROOT', BASE_DIR / "media")
+MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
+
+STATIC_ROOT = os.getenv('STATIC_ROOT', BASE_DIR / "staticfiles")
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
 
 
 # Default primary key field type
