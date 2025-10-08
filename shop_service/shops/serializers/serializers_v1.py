@@ -5,28 +5,101 @@ from ..models import *
 
 
 __all__ = [
-    'ShopSerializer',
+    'ShopListSerializer',
+    'ShopDetailSerializer',
+    'ShopCreateUpdateSerializer',
+    'ShopBranchListSerializer',
+    'ShopBranchCreateUpdateSerializer',
+    'ShopBranchDetailSerializer',
     'ShopMediaSerializer',
-    'ShopBranchSerializer',
     'ShopSocialMediaSerializer',
     'ShopCommentSerializer'
 ]
 
-class ShopSerializer(serializers.ModelSerializer):
+class ShopListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
-        fields = '__all__'
+        fields = [
+            'id', 
+            'name', 
+            'slug', 
+            'is_verified', 
+            'is_active', 
+            'profile'
+        ]
 
 
-class ShopBranchSerializer(serializers.ModelSerializer):
-    shop = serializers.PrimaryKeyRelatedField(read_only=True)
-    slug = serializers.PrimaryKeyRelatedField(read_only=True)
+class ShopDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = [
+            'id',
+            'user',
+            'name',
+            'slug',
+            'about',
+            'profile',
+            'is_verified',
+            'created_at',
+            'updated_at',
+        ]
+
+
+class ShopCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = [
+            'name',
+            'about',
+            'profile',
+        ]
+
+
+class ShopBranchListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShopBranch
+        fields = [
+            'id',
+            'shop_branch_name',
+            'slug',
+        ]
+
+
+class ShopBranchDetailSerializer(serializers.ModelSerializer):
+    shop = ShopListSerializer(read_only=True)
+
+    class Meta:
+        model = ShopBranch
+        fields = [
+            'id',
+            'shop',
+            'shop_branch_name',
+            'about',
+            'phone_number',
+            'latitude',
+            'longitude',
+            'created_at',
+            'updated_at',
+            'slug'
+        ]
+
+
+class ShopBranchCreateUpdateSerializer(serializers.ModelSerializer):
     latitude = serializers.FloatField()
     longitude = serializers.FloatField()
     
     class Meta:
         model = ShopBranch
-        fields = '__all__'
+        fields = [
+            'id',
+            'shop_branch_name',
+            'about',
+            'phone_number',
+            'latitude',
+            'longitude',
+            'created_at',
+            'updated_at',
+        ]
     
     def create(self, validated_data):
         validated_data['shop'] = self.context.get('shop')

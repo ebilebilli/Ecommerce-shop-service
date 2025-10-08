@@ -45,7 +45,7 @@ class ShopListAPIView(APIView):
         responses={
             200: openapi.Response(
                 description="Paginated list of active shops",
-                schema=ShopSerializer(many=True)
+                schema=ShopListSerializer(many=True)
             ),
             404: "Shops not found"
         }
@@ -55,7 +55,7 @@ class ShopListAPIView(APIView):
         shops = Shop.objects.filter(is_active=True)
         paginated_shops = pagination.paginate_queryset(shops, request)
         if paginated_shops:
-            serializer = ShopSerializer(paginated_shops, many=True)
+            serializer = ShopListSerializer(paginated_shops, many=True)
             return pagination.get_paginated_response(serializer.data)
         
         return Response({'error': 'Shops not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -68,11 +68,11 @@ class ShopDetailAPIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Get shop details by slug",
-        responses={200: ShopSerializer()}
+        responses={200: ShopDetailSerializer()}
     )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        serializer = ShopSerializer(shop)
+        serializer = ShopDetailSerializer(shop)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -84,16 +84,16 @@ class CreateShopAPIView(APIView):
     @swagger_auto_schema(
         operation_summary="Create a new shop",
         operation_description="Authenticated users can create a new shop. The current user is assigned automatically.",
-        request_body=ShopSerializer,
+        request_body=ShopCreateUpdateSerializer,
         responses={
-            201: ShopSerializer,
+            201: ShopCreateUpdateSerializer,
             400: "Validation errors"
         }
     )
     def post(self, request):
         user = request.user
         data = request.data
-        serializer = ShopSerializer(data=data)
+        serializer = ShopCreateUpdateSerializer(data=data)
         if serializer.is_valid():
             serializer.save(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -106,20 +106,49 @@ class ShopManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
+    @swagger_auto_schema(
+        operation_summary="Update shop information",
+        operation_description="""
+        Allows the shop owner to update their shop details.
+        Only authenticated users who own the shop can perform this action.
+        """,
+        request_body=ShopCreateUpdateSerializer,
+        responses={
+            200: openapi.Response(
+                description="Shop updated successfully",
+                schema=ShopCreateUpdateSerializer
+            ),
+            400: "Validation error",
+            403: "Permission denied",
+            404: "Shop not found"
+        }
+    )
     def patch(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         if shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ShopSerializer(shop, data=data, partial=True)
+        serializer = ShopCreateUpdateSerializer(shop, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
-
+    
+    @swagger_auto_schema(
+        operation_summary="Soft delete a shop",
+        operation_description="""
+        Marks a shop as inactive instead of deleting it permanently.
+        Only the shop owner can perform this action.
+        """,
+        responses={
+            204: "Shop deactivated successfully",
+            403: "Permission denied",
+            404: "Shop not found"
+        }
+    )
     def delete(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         if shop.user != request.user:
@@ -141,7 +170,7 @@ class ShopBranchListByShopAPIView(APIView):
         responses={
             200: openapi.Response(
                 description="List of active branches",
-                schema=ShopBranchSerializer(many=True)
+                schema=ShopBranchListSerializer(many=True)
             ),
             400: "No active branches found",
             404: "Shop not found"
@@ -151,7 +180,7 @@ class ShopBranchListByShopAPIView(APIView):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         shop_branches = ShopBranch.objects.filter(shop=shop, is_active=True)
         if shop_branches.exists():
-            serializer = ShopBranchSerializer(shop_branches, many=True)
+            serializer = ShopBranchListSerializer(shop_branches, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(
@@ -170,14 +199,14 @@ class ShopBranchDetailAPIView(APIView):
         responses={
             200: openapi.Response(
                 description="Branch details",
-                schema=ShopBranchSerializer()
+                schema=ShopBranchDetailSerializer()
             ),
             404: "Branch not found"
         }
     )
     def get(self, request, shop_branch_slug):
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
-        serializer = ShopBranchSerializer(shop_branch)
+        serializer = ShopBranchDetailSerializer(shop_branch)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
@@ -188,11 +217,11 @@ class CreateShopBranchAPIView(APIView):
 
     @swagger_auto_schema(
         operation_description="Create a new shop branch (authenticated users only).",
-        request_body=ShopBranchSerializer,
+        request_body=ShopBranchCreateUpdateSerializer,
         responses={
             201: openapi.Response(
                 description="Branch successfully created",
-                schema=ShopBranchSerializer()
+                schema=ShopBranchCreateUpdateSerializer()
             ),
             400: "Invalid data or validation error"
         }
@@ -200,7 +229,7 @@ class CreateShopBranchAPIView(APIView):
     def post(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
-        serializer = ShopBranchSerializer(
+        serializer = ShopBranchCreateUpdateSerializer(
             data=data, context={
                 'request': request,
                 'shop': shop
@@ -219,11 +248,11 @@ class ShopBranchManagementAPIView(APIView):
 
     @swagger_auto_schema(
         operation_description="Partially update your own shop branch.",
-        request_body=ShopBranchSerializer,
+        request_body=ShopBranchCreateUpdateSerializer,
         responses={
             200: openapi.Response(
                 description="Branch successfully updated",
-                schema=ShopBranchSerializer()
+                schema=ShopBranchCreateUpdateSerializer()
             ),
             400: "Validation error",
             403: "Permission denied",
@@ -236,7 +265,7 @@ class ShopBranchManagementAPIView(APIView):
         if shop_branch.shop.user != request.user:
             return Response({'error': 'You do not have permission'}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ShopBranchSerializer(shop_branch, data=data, partial=True)
+        serializer = ShopBranchCreateUpdateSerializer(shop_branch, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
