@@ -11,6 +11,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      SECRET_KEY: test-ci-key
+      DEBUG: '0'
+      ALLOWED_HOSTS: '*'
+      POSTGRES_DB: shop_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: '5432'
+
     services:
       postgres:
         image: postgres:16-alpine
@@ -44,30 +54,21 @@ jobs:
         run: |
           uv sync --frozen
 
+      - name: Wait for Postgres to be ready
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          for i in {1..30}; do
+            if pg_isready -h 127.0.0.1 -p 5432 -U postgres -d shop_service; then
+              echo "Postgres is ready"; break; fi; echo "Waiting for Postgres..."; sleep 2;
+          done
+
       - name: Run migrations
-        env:
-          SECRET_KEY: test-ci-key
-          DEBUG: '0'
-          ALLOWED_HOSTS: '*'
-          POSTGRES_DB: shop_service
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: '5432'
         run: |
           cd shop_service
-          uv run python shop_service/manage.py migrate --noinput
+          uv run python manage.py migrate --noinput
 
       - name: Run tests
-        env:
-          SECRET_KEY: test-ci-key
-          DEBUG: '0'
-          ALLOWED_HOSTS: '*'
-          POSTGRES_DB: shop_service
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: '5432'
         run: |
           cd shop_service
           uv run pytest -q
