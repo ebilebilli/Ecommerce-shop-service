@@ -55,6 +55,7 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: '5432'
         run: |
+          cd shop_service
           uv run python shop_service/manage.py migrate --noinput
 
       - name: Run tests
