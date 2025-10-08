@@ -25,10 +25,10 @@ def test_shop_creation():
 def test_shop_branch_creation():
     user = User.objects.create(username="branchuser")
     shop = Shop.objects.create(user=user, name="Shop With Branch")
-    branch = ShopBranch.objects.create(shop=shop, shop_branch_name="Main Branch", latitude=40.123456, longitude=49.654321)
+    branch = ShopBranch.objects.create(shop=shop, name="Main Branch", latitude=40.123456, longitude=49.654321)
     
     assert branch.shop == shop
-    assert branch.shop_branch_name == "Main Branch"
+    assert branch.name == "Main Branch"
     assert branch.is_active is True
     assert branch.latitude == 40.123456
     assert branch.longitude == 49.654321

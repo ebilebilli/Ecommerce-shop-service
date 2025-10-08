@@ -22,9 +22,9 @@ class ShopAdmin(admin.ModelAdmin):
 
 @admin.register(ShopBranch)
 class ShopBranchAdmin(admin.ModelAdmin):
-    list_display = ('shop', 'shop_branch_name', 'phone_number', 'is_active', 'created_at')
+    list_display = ('shop', 'name', 'phone_number', 'is_active', 'created_at')
     list_filter = ('is_active',)
-    search_fields = ('shop_branch_name', 'shop__name', 'phone_number')
+    search_fields = ('name', 'shop__name', 'phone_number')
     readonly_fields = ('created_at', 'updated_at')
 
 

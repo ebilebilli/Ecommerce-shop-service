@@ -73,7 +73,7 @@ class ShopBranchDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'shop',
-            'shop_branch_name',
+            'name',
             'about',
             'phone_number',
             'latitude',
@@ -92,7 +92,7 @@ class ShopBranchCreateUpdateSerializer(serializers.ModelSerializer):
         model = ShopBranch
         fields = [
             'id',
-            'shop_branch_name',
+            'name',
             'about',
             'phone_number',
             'latitude',
