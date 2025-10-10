@@ -17,12 +17,9 @@ __all__ = [
 ]
 
 class Shop(SluggedModel):
-    user = models.OneToOneField(     # This connection is temporary.It will change
-        User,
-        related_name='shops',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+    user_id = models.UUIDField(
+        null=False,
+        verbose_name='User'
     )
     id = models.UUIDField(
         primary_key=True,
@@ -63,6 +60,9 @@ class Shop(SluggedModel):
         auto_now=True,
         verbose_name='Shop updated at'
     )
+
+    class Meta:
+        verbose_name_plural = 'Shops'
 
     def get_slug_source(self) -> str:
         return self.name
@@ -120,6 +120,9 @@ class ShopBranch(SluggedModel):
         verbose_name='Is active'
     )
 
+    class Meta:
+        verbose_name_plural = 'ShopBranches'
+
     def get_slug_source(self) -> str:
         return self.name
 
@@ -128,11 +131,8 @@ class ShopBranch(SluggedModel):
 
 
 class ShopComment(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+    user_id = models.UUIDField(
+        null=False,
         verbose_name='User'
     )
     shop = models.ForeignKey(
@@ -167,6 +167,10 @@ class ShopComment(models.Model):
         verbose_name='Comment updated at'
     )
 
+    class Meta:
+        verbose_name_plural = 'ShopComments'
+        ordering = ('-created_at',)
+
     def clean(self):
         if not self.text and not self.rating:
             raise ValidationError('Comment text or rating must be provided.')
@@ -193,6 +197,10 @@ class ShopMedia(models.Model):
         verbose_name='Alt text for image'
         )
 
+    class Meta:
+        verbose_name_plural = 'ShopMedias'
+        ordering = ('-created_at',)
+
     def __str__(self):
         return str(self.id)
     
@@ -210,6 +218,9 @@ class ShopSocialMedia(models.Model):
         max_length=200,
         verbose_name='Media url'
     )
+
+    class Meta:
+        verbose_name_plural = 'ShopSocialMedias'
 
     def __str__(self):
         return f'{self.shop.id}: {self.media_name}'
