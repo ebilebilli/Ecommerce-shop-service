@@ -196,6 +196,10 @@ class ShopMedia(models.Model):
         null=True,
         verbose_name='Alt text for image'
         )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Shop created at'
+    )
 
     class Meta:
         verbose_name_plural = 'ShopMedias'
