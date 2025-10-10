@@ -1,5 +1,3 @@
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -40,16 +38,6 @@ class ShopListAPIView(APIView):
     http_method_names =['get']
     pagination_class = CustomPagination
 
-    @swagger_auto_schema(
-        operation_description="Get a paginated list of all active shops.",
-        responses={
-            200: openapi.Response(
-                description="Paginated list of active shops",
-                schema=ShopListSerializer(many=True)
-            ),
-            404: "Shops not found"
-        }
-    )
     def get(self, request):
         pagination = self.pagination_class()
         shops = Shop.objects.filter(is_active=True)
@@ -66,10 +54,6 @@ class ShopDetailAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names =['get']
 
-    @swagger_auto_schema(
-        operation_summary="Get shop details by slug",
-        responses={200: ShopDetailSerializer()}
-    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         serializer = ShopDetailSerializer(shop)
@@ -81,15 +65,6 @@ class CreateShopAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
-    @swagger_auto_schema(
-        operation_summary="Create a new shop",
-        operation_description="Authenticated users can create a new shop. The current user is assigned automatically.",
-        request_body=ShopCreateUpdateSerializer,
-        responses={
-            201: ShopCreateUpdateSerializer,
-            400: "Validation errors"
-        }
-    )
     def post(self, request):
         user = request.user
         data = request.data
@@ -106,23 +81,6 @@ class ShopManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    @swagger_auto_schema(
-        operation_summary="Update shop information",
-        operation_description="""
-        Allows the shop owner to update their shop details.
-        Only authenticated users who own the shop can perform this action.
-        """,
-        request_body=ShopCreateUpdateSerializer,
-        responses={
-            200: openapi.Response(
-                description="Shop updated successfully",
-                schema=ShopCreateUpdateSerializer
-            ),
-            400: "Validation error",
-            403: "Permission denied",
-            404: "Shop not found"
-        }
-    )
     def patch(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
@@ -137,18 +95,6 @@ class ShopManagementAPIView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
     
-    @swagger_auto_schema(
-        operation_summary="Soft delete a shop",
-        operation_description="""
-        Marks a shop as inactive instead of deleting it permanently.
-        Only the shop owner can perform this action.
-        """,
-        responses={
-            204: "Shop deactivated successfully",
-            403: "Permission denied",
-            404: "Shop not found"
-        }
-    )
     def delete(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         if shop.user != request.user:
@@ -165,17 +111,6 @@ class ShopBranchListByShopAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names = ['get']
 
-    @swagger_auto_schema(
-        operation_description="Get all active branches for a specific shop.",
-        responses={
-            200: openapi.Response(
-                description="List of active branches",
-                schema=ShopBranchListSerializer(many=True)
-            ),
-            400: "No active branches found",
-            404: "Shop not found"
-        }
-    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         shop_branches = ShopBranch.objects.filter(shop=shop, is_active=True)
@@ -194,16 +129,6 @@ class ShopBranchDetailAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names =['get']
 
-    @swagger_auto_schema(
-        operation_description="Get detailed information about a specific shop branch by its slug.",
-        responses={
-            200: openapi.Response(
-                description="Branch details",
-                schema=ShopBranchDetailSerializer()
-            ),
-            404: "Branch not found"
-        }
-    )
     def get(self, request, shop_branch_slug):
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
         serializer = ShopBranchDetailSerializer(shop_branch)
@@ -215,17 +140,6 @@ class CreateShopBranchAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names =['post']
 
-    @swagger_auto_schema(
-        operation_description="Create a new shop branch (authenticated users only).",
-        request_body=ShopBranchCreateUpdateSerializer,
-        responses={
-            201: openapi.Response(
-                description="Branch successfully created",
-                schema=ShopBranchCreateUpdateSerializer()
-            ),
-            400: "Invalid data or validation error"
-        }
-    )
     def post(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
@@ -246,19 +160,6 @@ class ShopBranchManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    @swagger_auto_schema(
-        operation_description="Partially update your own shop branch.",
-        request_body=ShopBranchCreateUpdateSerializer,
-        responses={
-            200: openapi.Response(
-                description="Branch successfully updated",
-                schema=ShopBranchCreateUpdateSerializer()
-            ),
-            400: "Validation error",
-            403: "Permission denied",
-            404: "Branch not found"
-        }
-    )
     def patch(self, request, shop_branch_slug):
         data = request.data
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
@@ -273,14 +174,6 @@ class ShopBranchManagementAPIView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
 
-    @swagger_auto_schema(
-        operation_description="Soft delete your own shop branch (sets is_active=False).",
-        responses={
-            204: "Branch successfully deleted",
-            403: "Permission denied",
-            404: "Branch not found"
-        }
-    )
     def delete(self, request, shop_branch_slug):
         shop_branch = get_object_or_404(ShopBranch, slug=shop_branch_slug, is_active=True)
         if shop_branch.shop.user != request.user:
@@ -298,16 +191,6 @@ class CommentListByShopAPIView(APIView):
     pagination_class = CustomPagination
     http_method_names = ['get']
 
-    @swagger_auto_schema(
-        operation_description="Get a paginated list of comments for a specific active shop.",
-        responses={
-            200: openapi.Response(
-                description="Paginated list of shop comments",
-                schema=ShopCommentSerializer(many=True)
-            ),
-            404: "Shop not found"
-        }
-    )
     def get(self, request, slug):
         pagination = self.pagination_class()
         shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=slug)
@@ -323,15 +206,6 @@ class CreateShopCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
-    @swagger_auto_schema(
-        operation_summary="Create a comment for a shop",
-        operation_description="Authenticated users can create a comment for a given shop. The shop is determined by the slug in the URL.",
-        request_body=ShopCommentSerializer,
-        responses={
-            201: ShopCommentSerializer,
-            400: "Validation errors"
-        }
-    )
     def post(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
@@ -352,19 +226,6 @@ class CommentManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['delete', 'patch']
 
-    @swagger_auto_schema(
-        operation_description="Partially update a comment owned by the authenticated user.",
-        request_body=ShopCommentSerializer,
-        responses={
-            200: openapi.Response(
-                description="Successfully updated comment",
-                schema=ShopCommentSerializer()
-            ),
-            400: "Validation error",
-            403: "Permission denied",
-            404: "Comment not found"
-        }
-    )    
     def patch(self, request, comment_id):
         data = request.data
         comment = get_object_or_404(ShopComment, id=comment_id)
@@ -379,14 +240,6 @@ class CommentManagementAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-    @swagger_auto_schema(
-        operation_description="Soft delete a comment owned by the authenticated user (sets is_active=False).",
-        responses={
-            204: "Comment successfully deleted",
-            403: "Permission denied",
-            404: "Comment not found"
-        }
-    )
     def delete(self, request, comment_id):
         comment = get_object_or_404(ShopComment, id=comment_id)
         if comment.user != request.user:
@@ -403,17 +256,6 @@ class ShopMediaByShopAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names = ['get']
 
-    @swagger_auto_schema(
-        operation_description="Get all media items for a specific shop.",
-        responses={
-            200: openapi.Response(
-                description="List of media items",
-                schema=ShopMediaSerializer(many=True)
-            ),
-            400: "No media found for this shop",
-            404: "Shop not found"
-        }
-    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         social_medias = ShopMedia.objects.filter(shop=shop)
@@ -432,17 +274,6 @@ class CreateShopMediaAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
-    @swagger_auto_schema(
-        operation_description="Create a new media item for a shop (authenticated users only).",
-        request_body=ShopMediaSerializer,
-        responses={
-            201: openapi.Response(
-                description="Media item successfully created",
-                schema=ShopMediaSerializer()
-            ),
-            400: "Invalid data or validation error"
-        }
-    )
     def post(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
@@ -463,14 +294,6 @@ class DeleteShopMediaAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['delete']
     
-    @swagger_auto_schema(
-        operation_description="Delete a specific shop media (only the shop owner can perform this).",
-        responses={
-            204: "Media successfully deleted",
-            403: "Permission denied",
-            404: "Media not found"
-        }
-    )
     def delete(self, request, media_id):
         shop_media = get_object_or_404(ShopMedia, id=media_id)
         if shop_media.shop.user != request.user:
@@ -486,17 +309,6 @@ class ShopSocialMediaListByShopAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names = ['get']
 
-    @swagger_auto_schema(
-        operation_description="Get all social media accounts for a given shop by slug.",
-        responses={
-            200: openapi.Response(
-                description="List of social media accounts",
-                schema=ShopSocialMediaSerializer(many=True)
-            ),
-            400: "No social media found for this shop",
-            404: "Shop not found"
-        }
-    )
     def get(self, request, shop_slug):
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
         social_medias = ShopSocialMedia.objects.filter(shop=shop)
@@ -515,17 +327,6 @@ class ShopSocialMediaDetailAPIView(APIView):
     permission_classes = [AllowAny]
     http_method_names = ['get']
     
-    @swagger_auto_schema(
-        operation_description="Get detailed info about a specific shop social media by ID.",
-        responses={
-            200: openapi.Response(
-                description="Detailed social media info",
-                schema=ShopSocialMediaSerializer()
-            ),
-            404: "Social media not found"
-        }
-    )
-
     def get(self, request, social_media_id):
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
         serializer = ShopSocialMediaSerializer(social_media)
@@ -537,17 +338,6 @@ class CreateShopSocialMediaAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
-    @swagger_auto_schema(
-        operation_description="Create a new shop social media entry.",
-        request_body=ShopSocialMediaSerializer,
-        responses={
-            201: openapi.Response(
-                description="Successfully created",
-                schema=ShopSocialMediaSerializer()
-            ),
-            400: "Validation error"
-        }
-    )
     def post(self, request, shop_slug):
         data = request.data
         shop = get_object_or_404(Shop, slug=shop_slug, is_active=True)
@@ -568,20 +358,6 @@ class ShopSocialMediaManagementAPIView(APIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
-    
-    @swagger_auto_schema(
-        operation_description="Update a shop social media (only owner).",
-        request_body=ShopSocialMediaSerializer,
-        responses={
-            200: openapi.Response(
-                description="Updated social media",
-                schema=ShopSocialMediaSerializer()
-            ),
-            403: "You do not have permission",
-            400: "Validation error",
-            404: "Social media not found"
-        }
-    )
     def patch(self, request, social_media_id):
         data = request.data
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
@@ -595,15 +371,6 @@ class ShopSocialMediaManagementAPIView(APIView):
         
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
     
-
-    @swagger_auto_schema(
-        operation_description="Delete a shop social media (only owner).",
-        responses={
-            204: "Successfully deleted",
-            403: "You do not have permission",
-            404: "Social media not found"
-        }
-    )
     def delete(self, request, social_media_id):
         social_media = get_object_or_404(ShopSocialMedia, id=social_media_id)
         if social_media.shop.user != request.user:
