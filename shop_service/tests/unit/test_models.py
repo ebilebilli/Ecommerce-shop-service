@@ -7,12 +7,12 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 @pytest.mark.django_db
 def test_shop_creation():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Test Shop", about="Some info about shop")
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Test Shop", about="Some info about shop")
     
     assert shop.name == "Test Shop"
     assert shop.about == "Some info about shop"
-    assert shop.user_id == user_id
+    assert shop.user == user
     assert shop.is_active is True
     assert shop.is_verified is False
     assert isinstance(shop.id, uuid.UUID)
@@ -22,8 +22,8 @@ def test_shop_creation():
 
 @pytest.mark.django_db
 def test_shop_branch_creation():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop With Branch")
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Shop With Branch")
     branch = ShopBranch.objects.create(shop=shop, name="Main Branch", latitude=40.123456, longitude=49.654321)
     
     assert branch.shop == shop
