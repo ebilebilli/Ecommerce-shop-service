@@ -17,10 +17,17 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(",")
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "shop-service-814454543179.europe-west1.run.app",
+]
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
-
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://shop-service-814454543179.europe-west1.run.app",
+]
 
 # Cors settings
 CORS_ALLOW_ALL_ORIGINS = True
