@@ -131,7 +131,7 @@ class ShopBranch(SluggedModel):
 
 
 class ShopComment(models.Model):
-    user_id = models.UUIDField(
+    user = models.UUIDField(
         null=False,
         verbose_name='User'
     )
