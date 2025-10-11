@@ -40,4 +40,4 @@ ENV PORT 8080
 EXPOSE 8080
 
 # Start Django using Gunicorn
-CMD ["gunicorn", "shop_service.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
