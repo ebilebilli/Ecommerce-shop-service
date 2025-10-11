@@ -57,8 +57,8 @@ def test_shop_comment_clean_validation():
 @pytest.mark.django_db
 def test_shop_comment_str():
     user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop Str Test")
-    comment = ShopComment.objects.create(user_id=user_id, shop=shop, text="Great", rating=5)
+    shop = Shop.objects.create(user=user_id, name="Shop Str Test")  # user_id → user
+    comment = ShopComment.objects.create(user=user_id, shop=shop, text="Great", rating=5)
     
     assert str(comment) == f"{user_id} add comment to {shop.id}"
 
