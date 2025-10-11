@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 class Shop(SluggedModel):
-    user_id = models.UUIDField(
+    user = models.UUIDField(
         null=False,
         verbose_name='User'
     )
