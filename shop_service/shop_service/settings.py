@@ -92,7 +92,11 @@ WSGI_APPLICATION = 'shop_service.wsgi.application'
 
 # Database(PostgreSQL) configuration
 
-if os.environ.get("RUNNING_ON_CLOUDRUN") == "true":
+# Check if running on Cloud Run
+is_cloud_run = os.environ.get("RUNNING_ON_CLOUDRUN", "").lower() == "true"
+
+if is_cloud_run:
+    # Cloud Run configuration with Cloud SQL
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -103,16 +107,16 @@ if os.environ.get("RUNNING_ON_CLOUDRUN") == "true":
             'PORT': '',
         }
     }
-
 else:
+    # Local development configuration
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB'),
-            'USER': os.getenv('POSTGRES_USER'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-            'HOST': os.getenv('POSTGRES_HOST'),
-            'PORT': os.getenv('POSTGRES_PORT'),
+            'NAME': os.getenv('POSTGRES_DB', 'shop_service'),
+            'USER': os.getenv('POSTGRES_USER', 'postgres'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres123'),
+            'HOST': os.getenv('POSTGRES_HOST', 'db'),
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
             'CONN_MAX_AGE': 600,  
             'OPTIONS': {
                 'sslmode': 'disable',
