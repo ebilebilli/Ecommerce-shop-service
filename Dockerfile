@@ -38,8 +38,9 @@ WORKDIR /app/shop_service
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Ensure staticfiles dir exists and is writable
-RUN mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles
+# permissions
+RUN mkdir -p /app/staticfiles /app/shop_service/media
+RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
 # Expose port
 EXPOSE 8000
