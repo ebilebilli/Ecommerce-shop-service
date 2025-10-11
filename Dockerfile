@@ -41,6 +41,5 @@ RUN mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles
 # Expose port
 EXPOSE 8000
 
-# Entrypoint script
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Start Django via gunicorn
+CMD ["gunicorn", "shop_service.wsgi:application", "--bind", "0.0.0.0:8000"]
