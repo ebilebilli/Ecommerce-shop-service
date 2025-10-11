@@ -52,5 +52,5 @@ volumes:
 
 networks:
   internal_net:
-    # internal: true
+  # internal: true
     driver: bridge
