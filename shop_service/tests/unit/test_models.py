@@ -1,19 +1,18 @@
 import pytest
 import uuid
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 from shops.models import *
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 @pytest.mark.django_db
 def test_shop_creation():
-    user = User.objects.create(username="shopuser")
-    shop = Shop.objects.create(user=user, name="Test Shop", about="Some info about shop")
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Test Shop", about="Some info about shop")
     
     assert shop.name == "Test Shop"
     assert shop.about == "Some info about shop"
-    assert shop.user == user
+    assert shop.user_id == user_id
     assert shop.is_active is True
     assert shop.is_verified is False
     assert isinstance(shop.id, uuid.UUID)
@@ -23,8 +22,8 @@ def test_shop_creation():
 
 @pytest.mark.django_db
 def test_shop_branch_creation():
-    user = User.objects.create(username="branchuser")
-    shop = Shop.objects.create(user=user, name="Shop With Branch")
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Shop With Branch")
     branch = ShopBranch.objects.create(shop=shop, name="Main Branch", latitude=40.123456, longitude=49.654321)
     
     assert branch.shop == shop
@@ -37,10 +36,10 @@ def test_shop_branch_creation():
 
 @pytest.mark.django_db
 def test_shop_comment_clean_validation():
-    user = User.objects.create(username="commentuser")
-    shop = Shop.objects.create(user=user, name="Shop For Comment")
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Shop For Comment")
     
-    comment = ShopComment(user=user, shop=shop)
+    comment = ShopComment(user_id=user_id, shop=shop)
     with pytest.raises(ValidationError):
         comment.clean()
     
@@ -57,17 +56,17 @@ def test_shop_comment_clean_validation():
 
 @pytest.mark.django_db
 def test_shop_comment_str():
-    user = User.objects.create(username="struser")
-    shop = Shop.objects.create(user=user, name="Shop Str Test")
-    comment = ShopComment.objects.create(user=user, shop=shop, text="Great", rating=5)
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Shop Str Test")
+    comment = ShopComment.objects.create(user_id=user_id, shop=shop, text="Great", rating=5)
     
-    assert str(comment) == f"{user.id} add comment to {shop.id}"
+    assert str(comment) == f"{user_id} add comment to {shop.id}"
 
 
 @pytest.mark.django_db
 def test_shop_media_creation():
-    user = User.objects.create(username="mediauser")
-    shop = Shop.objects.create(user=user, name="Shop Media")
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Shop Media")
     
     image = SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
     media = ShopMedia.objects.create(shop=shop, image=image, alt_text="Alt text")
@@ -79,8 +78,8 @@ def test_shop_media_creation():
 
 @pytest.mark.django_db
 def test_shop_social_media_creation():
-    user = User.objects.create(username="socialuser")
-    shop = Shop.objects.create(user=user, name="Shop Social")
+    user_id = uuid.uuid4()
+    shop = Shop.objects.create(user_id=user_id, name="Shop Social")
     
     sm = ShopSocialMedia.objects.create(shop=shop, media_name="Instagram", media_url="https://instagram.com/shop")
     
