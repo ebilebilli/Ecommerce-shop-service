@@ -36,10 +36,10 @@ def test_shop_branch_creation():
 
 @pytest.mark.django_db
 def test_shop_comment_clean_validation():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop For Comment")  
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Shop For Comment")  
 
-    comment = ShopComment(user=user_id, shop=shop)  
+    comment = ShopComment(user=user, shop=shop)  
     with pytest.raises(ValidationError):
         comment.clean()
 
@@ -56,17 +56,17 @@ def test_shop_comment_clean_validation():
 
 @pytest.mark.django_db
 def test_shop_comment_str():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop Str Test")  
-    comment = ShopComment.objects.create(user=user_id, shop=shop, text="Great", rating=5)
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Shop Str Test")  
+    comment = ShopComment.objects.create(user=user, shop=shop, text="Great", rating=5)
 
-    assert str(comment) == f"{user_id} add comment to {shop.id}"
+    assert str(comment) == f"{user} add comment to {shop.id}"
 
 
 @pytest.mark.django_db
 def test_shop_media_creation():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop Media")
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Shop Media")
     
     image = SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
     media = ShopMedia.objects.create(shop=shop, image=image, alt_text="Alt text")
@@ -78,8 +78,8 @@ def test_shop_media_creation():
 
 @pytest.mark.django_db
 def test_shop_social_media_creation():
-    user_id = uuid.uuid4()
-    shop = Shop.objects.create(user_id=user_id, name="Shop Social")
+    user = uuid.uuid4()
+    shop = Shop.objects.create(user=user, name="Shop Social")
     
     sm = ShopSocialMedia.objects.create(shop=shop, media_name="Instagram", media_url="https://instagram.com/shop")
     

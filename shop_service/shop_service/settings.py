@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,12 +129,11 @@ USE_TZ = True
 
 # Media / Static configuration
 
-MEDIA_ROOT = os.getenv('MEDIA_ROOT', BASE_DIR / "media")
-MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATIC_ROOT = os.getenv('STATIC_ROOT', BASE_DIR / "staticfiles")
-STATIC_URL = os.getenv('STATIC_URL', '/static/')
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'shop_service/media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
