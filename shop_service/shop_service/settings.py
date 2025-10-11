@@ -14,6 +14,8 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+PORT = os.getenv("PORT", 8000)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
