@@ -176,7 +176,7 @@ class ShopComment(models.Model):
             raise ValidationError('Comment text or rating must be provided.')
 
     def __str__(self):
-        return f'{self.user.id} add comment to {self.shop.id}'
+        return f'{self.user} add comment to {self.shop.id}'
     
 
 class ShopMedia(models.Model):
