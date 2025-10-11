@@ -30,6 +30,6 @@ RUN mkdir -p /app/staticfiles /app/shop_service/media
 RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
 ENV PORT 8080
-EXPOSE $PORT
+EXPOSE 8080
 
 CMD ["gunicorn", "shop_service.wsgi:application", "--bind", "0.0.0.0:$PORT"]
