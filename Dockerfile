@@ -15,15 +15,8 @@ WORKDIR /app
 # Copy pyproject.toml
 COPY pyproject.toml ./ 
 
-# Generate requirements.txt from pyproject.toml
-RUN python - <<'PY'
-import tomllib, sys
-with open('pyproject.toml','rb') as f:
-    data = tomllib.load(f)
-reqs = data.get('project', {}).get('dependencies', [])
-open('requirements.txt','w', encoding='utf-8').write("\n".join(reqs))
-print(f"Wrote {len(reqs)} dependencies to requirements.txt", file=sys.stderr)
-PY
+# Generate requirements.txt from pyproject.toml (single-line for Cloud Build)
+RUN python -c "import tomllib, sys; data=tomllib.load(open('pyproject.toml','rb')); reqs=data.get('project', {}).get('dependencies', []); open('requirements.txt','w',encoding='utf-8').write('\n'.join(reqs)); print(f'Wrote {len(reqs)} dependencies to requirements.txt', file=sys.stderr)"
 
 # Install Python dependencies
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
@@ -44,7 +37,7 @@ RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
 # Expose port
 ENV PORT 8080
-EXPOSE $PORT
+EXPOSE 8080
 
 # Start Django using Gunicorn
 CMD ["gunicorn", "shop_service.wsgi:application", "--bind", "0.0.0.0:$PORT"]
