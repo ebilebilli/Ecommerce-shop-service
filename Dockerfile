@@ -24,12 +24,12 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 # Copy all project files
 COPY . .
 
-# Copy and make entrypoint.sh executable as root
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
 # Change to Django project directory
 WORKDIR /app/shop_service
+
+# Apply database migrations and collect static files as root
+RUN python manage.py migrate --noinput
+RUN python manage.py collectstatic --noinput --clear
 
 # Create a non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
@@ -37,11 +37,11 @@ USER appuser
 
 # Create static and media directories with proper permissions
 RUN mkdir -p /app/staticfiles /app/shop_service/media
-RUN chmod -R 777 /app/staticfiles /app/shop_service/media
+RUN chown -R appuser:appuser /app/staticfiles /app/shop_service/media
 
 # Expose port
 ENV PORT 8080
 EXPOSE 8080
 
-# Use entrypoint.sh as the entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Start Django using Gunicorn
+CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
