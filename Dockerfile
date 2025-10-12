@@ -27,12 +27,13 @@ COPY . .
 # Change to Django project directory
 WORKDIR /app/shop_service
 
-# Apply database migrations and collect static files as root
-RUN python manage.py migrate --noinput
-RUN python manage.py collectstatic --noinput --clear
-
 # Create a non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
+
+# Copy and make entrypoint.sh executable as root
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 USER appuser
 
 # Create static and media directories with proper permissions
@@ -43,5 +44,5 @@ RUN chown -R appuser:appuser /app/staticfiles /app/shop_service/media
 ENV PORT 8080
 EXPOSE 8080
 
-# Start Django using Gunicorn
-CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
+# Use entrypoint.sh to run migrations, collectstatic, and start Gunicorn
+CMD ["/app/entrypoint.sh"]
