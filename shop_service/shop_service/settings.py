@@ -84,8 +84,10 @@ WSGI_APPLICATION = 'shop_service.wsgi.application'
 
 # Database(PostgreSQL) configuration
 
+# Check if running on Cloud Run
+is_cloud_run = os.environ.get("RUNNING_ON_CLOUDRUN", "").lower() == "true"
 
-if not DEBUG:
+if is_cloud_run:
     # Cloud Run configuration with Cloud SQL
     DATABASES = {
         'default': {
