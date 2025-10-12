@@ -21,7 +21,7 @@ RUN python -c "import tomllib, sys; data=tomllib.load(open('pyproject.toml','rb'
 # Install Python dependencies
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Copy all project files
+# Copy all project files (including entrypoint.sh)
 COPY . .
 
 # Change to Django project directory
@@ -35,9 +35,13 @@ USER appuser
 RUN mkdir -p /app/staticfiles /app/shop_service/media
 RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
+# Make entrypoint.sh executable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Expose port
 ENV PORT 8080
 EXPOSE 8080
 
-# Start Django using Gunicorn
-CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
+# Use entrypoint.sh as the entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
