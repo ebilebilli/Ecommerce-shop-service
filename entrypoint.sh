@@ -32,6 +32,10 @@ fi
 echo "Running migrations..."
 python manage.py migrate --noinput || { echo "Migration failed!"; exit 1; }
 
+# Create superuser if not exists
+echo "Checking for superuser..."
+python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin','admin@example.com','admin') if not User.objects.filter(username='admin').exists() else None"
+
 # Collect static files
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear || { echo "Collectstatic failed!"; exit 1; }
