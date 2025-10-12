@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
-# Install system dependencies
+# System dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev ca-certificates postgresql-client && \
     rm -rf /var/lib/apt/lists/*
@@ -27,17 +27,19 @@ COPY . .
 # Change to Django project directory
 WORKDIR /app/shop_service
 
-# Create non-root user
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
-
-# Create static and media directories
-RUN mkdir -p /app/staticfiles /app/shop_service/media
-RUN chmod -R 777 /app/staticfiles /app/shop_service/media
-
-# Copy entrypoint script
+# Copy entrypoint script and give execute permission as root
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Create non-root user and set ownership
+RUN useradd -m appuser && chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Create static and media directories with proper permissions
+RUN mkdir -p /app/staticfiles /app/shop_service/media
+RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
 # Expose port
 ENV PORT 8080
