@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy pyproject.toml
-COPY pyproject.toml ./ 
+COPY pyproject.toml ./
 
-# Generate requirements.txt from pyproject.toml (single-line for Cloud Build)
+# Generate requirements.txt from pyproject.toml
 RUN python -c "import tomllib, sys; data=tomllib.load(open('pyproject.toml','rb')); reqs=data.get('project', {}).get('dependencies', []); open('requirements.txt','w',encoding='utf-8').write('\n'.join(reqs)); print(f'Wrote {len(reqs)} dependencies to requirements.txt', file=sys.stderr)"
 
 # Install Python dependencies
@@ -27,17 +27,21 @@ COPY . .
 # Change to Django project directory
 WORKDIR /app/shop_service
 
-# Create a non-root user
+# Create non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Create static and media directories with proper permissions
+# Create static and media directories
 RUN mkdir -p /app/staticfiles /app/shop_service/media
 RUN chmod -R 777 /app/staticfiles /app/shop_service/media
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Expose port
 ENV PORT 8080
 EXPOSE 8080
 
-# Start Django using Gunicorn
-CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
+# Use entrypoint for startup
+CMD ["/entrypoint.sh"]
