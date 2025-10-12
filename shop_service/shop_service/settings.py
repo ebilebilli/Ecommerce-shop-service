@@ -15,7 +15,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -82,20 +82,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'shop_service.wsgi.application'
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
 # Database(PostgreSQL) configuration
 
-# Check if running on Cloud Run
-is_cloud_run = os.environ.get("RUNNING_ON_CLOUDRUN", "").lower() == "true"
 
-if is_cloud_run:
+if not DEBUG:
     # Cloud Run configuration with Cloud SQL
     DATABASES = {
         'default': {
