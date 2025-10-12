@@ -15,7 +15,7 @@ WORKDIR /app
 # Copy pyproject.toml
 COPY pyproject.toml ./ 
 
-# Generate requirements.txt from pyproject.toml
+# Generate requirements.txt from pyproject.toml (single-line for Cloud Build)
 RUN python -c "import tomllib, sys; data=tomllib.load(open('pyproject.toml','rb')); reqs=data.get('project', {}).get('dependencies', []); open('requirements.txt','w',encoding='utf-8').write('\n'.join(reqs)); print(f'Wrote {len(reqs)} dependencies to requirements.txt', file=sys.stderr)"
 
 # Install Python dependencies
@@ -23,6 +23,10 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 # Copy all project files
 COPY . .
+
+# Copy entrypoint script and set executable permission BEFORE switching user
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Change to Django project directory
 WORKDIR /app/shop_service
@@ -35,13 +39,9 @@ USER appuser
 RUN mkdir -p /app/staticfiles /app/shop_service/media
 RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 
-# Copy entrypoint script
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
 # Expose port
 ENV PORT 8080
 EXPOSE 8080
 
-# Start Django using entrypoint
+# Use entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
