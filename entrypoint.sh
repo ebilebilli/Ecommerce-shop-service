@@ -14,10 +14,8 @@ fi
 # Apply database migrations
 python shop_service/manage.py migrate --noinput
 
-# Collect static files (safe if none exist)
+# Collect static files
 python shop_service/manage.py collectstatic --noinput --clear
 
-# Start server
-python shop_service/manage.py runserver 0.0.0.0:8000
-
-
+# Start Gunicorn
+gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
