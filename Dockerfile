@@ -24,10 +24,6 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 # Copy all project files
 COPY . .
 
-# Copy entrypoint script and set executable permission BEFORE switching user
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
 # Change to Django project directory
 WORKDIR /app/shop_service
 
@@ -43,5 +39,5 @@ RUN chmod -R 777 /app/staticfiles /app/shop_service/media
 ENV PORT 8080
 EXPOSE 8080
 
-# Use entrypoint script
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Start Django using Gunicorn
+CMD gunicorn shop_service.wsgi:application --bind 0.0.0.0:$PORT
