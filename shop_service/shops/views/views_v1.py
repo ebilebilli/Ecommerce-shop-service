@@ -204,7 +204,6 @@ class CommentListByShopAPIView(APIView):
 class CreateShopCommentAPIView(APIView):
     """Create a shop comment."""
     #permission_classes = [IsAuthenticated]
-    http_method_names = ['post']
 
     def post(self, request, shop_slug):
         data = request.data
