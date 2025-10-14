@@ -191,9 +191,9 @@ class CommentListByShopAPIView(APIView):
     pagination_class = CustomPagination
     http_method_names = ['get']
 
-    def get(self, request, slug):
+    def get(self, request, shop_slug):
         pagination = self.pagination_class()
-        shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=slug)
+        shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=shop_slug)
         comments = ShopComment.objects.filter(shop=shop)
         paginator = pagination.paginate_queryset(comments, request)
         serializer = ShopCommentSerializer(paginator, many=True)
