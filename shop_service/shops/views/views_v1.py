@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -59,7 +61,7 @@ class ShopDetailAPIView(APIView):
         serializer = ShopDetailSerializer(shop)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class CreateShopAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
     #permission_classes = [IsAuthenticated]
@@ -191,9 +193,9 @@ class CommentListByShopAPIView(APIView):
     pagination_class = CustomPagination
     http_method_names = ['get']
 
-    def get(self, request, slug):
+    def get(self, request, shop_slug):
         pagination = self.pagination_class()
-        shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=slug)
+        shop = get_object_or_404(Shop.objects.filter(is_active=True), slug=shop_slug)
         comments = ShopComment.objects.filter(shop=shop)
         paginator = pagination.paginate_queryset(comments, request)
         serializer = ShopCommentSerializer(paginator, many=True)
