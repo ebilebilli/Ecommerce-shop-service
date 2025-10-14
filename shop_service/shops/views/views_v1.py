@@ -272,7 +272,6 @@ class ShopMediaByShopAPIView(APIView):
 class CreateShopMediaAPIView(APIView):
     """Allows an authenticated user to create a new shop media."""
     #permission_classes = [IsAuthenticated]
-    http_method_names = ['post']
 
     def post(self, request, shop_slug):
         data = request.data
