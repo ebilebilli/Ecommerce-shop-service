@@ -61,6 +61,7 @@ class ShopDetailAPIView(APIView):
         serializer = ShopDetailSerializer(shop)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateShopAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
