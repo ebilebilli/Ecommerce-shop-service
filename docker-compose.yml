@@ -41,7 +41,7 @@ services:
       - media:/app/shop_service/media
       - staticfiles:/app/staticfiles
     ports:
-      - "${WEB_PORT:-8000}:8000"
+      - "${WEB_PORT:-8080}:8080"
     networks:
       - internal_net
 
