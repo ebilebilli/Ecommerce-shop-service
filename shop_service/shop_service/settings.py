@@ -171,7 +171,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': """
         Shop Service documentation
 
-        GitHub: [My Repo](https://github.com/ebilebilli)
+        GitHub: <a href="https://github.com/ebilebilli" target="_blank">My Repo</a>
     """,
     'VERSION': '0.1',
 }
