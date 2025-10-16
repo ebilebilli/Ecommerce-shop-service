@@ -170,8 +170,6 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Shop Service API',
     'DESCRIPTION': """
         Shop Service documentation
-
-        GitHub: <a href="https://github.com/ebilebilli" target="_blank">My Repo</a>
     """,
     'VERSION': '0.1',
 }
