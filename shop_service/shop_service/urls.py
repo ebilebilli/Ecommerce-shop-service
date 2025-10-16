@@ -3,8 +3,8 @@ from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from rest_framework.permissions import AllowAny, JSONRenderer
-
+from rest_framework.permissions import AllowAny
+from rest_framework.renderers import JSONRenderer
 
 urlpatterns = [
     path('admin/', admin.site.urls),
