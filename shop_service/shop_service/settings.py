@@ -167,7 +167,11 @@ REST_FRAMEWORK = {
 
 # Swagger settings
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'My Project API',
-    'DESCRIPTION': 'API documentation',
-    'VERSION': '1.0.0',
+    'TITLE': 'Shop Service API',
+    'DESCRIPTION': """
+        Shop Service documentation
+
+        GitHub: [My Repo](https://github.com/ebilebilli)
+    """,
+    'VERSION': '0.1',
 }
