@@ -65,7 +65,7 @@ class ShopDetailAPIView(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateShopAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
     def post(self, request):
@@ -81,7 +81,7 @@ class CreateShopAPIView(APIView):
 
 class ShopManagementAPIView(APIView):
     """Update or soft-delete a shop. Only the owner can modify or delete."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, shop_slug):
@@ -140,7 +140,7 @@ class ShopBranchDetailAPIView(APIView):
 
 class CreateShopBranchAPIView(APIView):
     """Allows an authenticated user to create a new shop branch."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names =['post']
 
     def post(self, request, shop_slug):
@@ -160,7 +160,7 @@ class CreateShopBranchAPIView(APIView):
 
 class ShopBranchManagementAPIView(APIView):
     """Allows the owner to update or soft-delete their shop branch."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, shop_branch_slug):
@@ -206,7 +206,7 @@ class CommentListByShopAPIView(APIView):
 
 class CreateShopCommentAPIView(APIView):
     """Create a shop comment."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, shop_slug):
         data = request.data
@@ -225,7 +225,7 @@ class CreateShopCommentAPIView(APIView):
 class CommentManagementAPIView(APIView):
     """Update or delete a comment."""
     #authentication_classes = [JWTAuthentication]
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['delete', 'patch']
 
     def patch(self, request, comment_id):
@@ -273,7 +273,7 @@ class ShopMediaByShopAPIView(APIView):
 
 class CreateShopMediaAPIView(APIView):
     """Allows an authenticated user to create a new shop media."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, shop_slug):
         data = request.data
@@ -292,7 +292,7 @@ class CreateShopMediaAPIView(APIView):
 
 class DeleteShopMediaAPIView(APIView):
     """Allows the owner to delete their shop media."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['delete']
     
     def delete(self, request, media_id):
@@ -336,7 +336,7 @@ class ShopSocialMediaDetailAPIView(APIView):
 
 class CreateShopSocialMediaAPIView(APIView):
     """Allows an authenticated user to create a new shop social media."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['post']
 
     def post(self, request, shop_slug):
@@ -356,7 +356,7 @@ class CreateShopSocialMediaAPIView(APIView):
 
 class ShopSocialMediaManagementAPIView(APIView):
     """Allows the owner to update or delete their shop social media."""
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['patch', 'delete']
 
     def patch(self, request, social_media_id):
