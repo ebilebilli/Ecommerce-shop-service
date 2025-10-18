@@ -16,7 +16,7 @@ urlpatterns = [
     ),  
     path(
         'shops/create/',
-        CreateShopAPIView.as_view(), 
+        ShopCreateAPIView.as_view(), 
         name='shop-create'
     ),
     path(

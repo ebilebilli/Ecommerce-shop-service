@@ -13,7 +13,7 @@ from utils.pagination import CustomPagination
 __all__ = [
     'ShopListAPIView',
     'ShopDetailAPIView',
-    'CreateShopAPIView',
+    'ShopCreateAPIView',
     'ShopManagementAPIView',
     'ShopBranchListByShopAPIView',
     'ShopBranchDetailAPIView',
@@ -60,7 +60,7 @@ class ShopDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class CreateShopAPIView(APIView):
+class ShopCreateAPIView(APIView):
     """Create a new shop. Only authenticated users can create."""
     permission_classes = [IsAuthenticated]
     http_method_names = ['post']
