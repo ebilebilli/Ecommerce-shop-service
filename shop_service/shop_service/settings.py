@@ -27,6 +27,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "https://shop-service-814454543179.europe-west1.run.app",
+    "https://api-gateway-service-814454543179.europe-west1.run.app/"
 ]
 
 # Cors settings
